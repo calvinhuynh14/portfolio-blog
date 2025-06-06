@@ -1,61 +1,144 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Personal Blog Portfolio
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A personal blog/portfolio website built with Laravel and Docker.
 
-## About Laravel
+## Prerequisites
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+-   Docker Desktop
+-   Git
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Setup Instructions
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+1. **Clone the repository**
 
-## Learning Laravel
+    ```sh
+    git clone <your-repo-url>
+    cd portfolio-blog
+    ```
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+2. **Start the Docker containers**
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+    ```sh
+    docker compose up -d
+    ```
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+3. **Install PHP dependencies**
 
-## Laravel Sponsors
+    ```sh
+    docker compose exec app composer install
+    ```
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+4. **Generate Laravel application key**
 
-### Premium Partners
+    ```sh
+    docker compose exec app php artisan key:generate
+    ```
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+5. **Run database migrations**
 
-## Contributing
+    ```sh
+    docker compose exec app php artisan migrate
+    ```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+6. **Install and build frontend assets**
 
-## Code of Conduct
+    ```sh
+    docker compose exec app npm install
+    docker compose exec app npm run build
+    ```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+7. **Access the website**
+    - Open your browser and go to `http://localhost:8000`
 
-## Security Vulnerabilities
+## Starting the Project
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+After the initial setup, to start working on the project:
 
-## License
+1. **Start Docker Desktop**
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+    - Make sure Docker Desktop is running on your machine
+
+2. **Start the containers**
+
+    ```sh
+    docker compose up -d
+    ```
+
+3. **If you're working on frontend assets**, start Vite in development mode:
+
+    ```sh
+    docker compose exec app npm run dev
+    ```
+
+4. **Access the website**
+    - Open your browser and go to `http://localhost:8000`
+
+## Stopping the Project
+
+When you're done working:
+
+1. **Stop Vite** (if running)
+
+    - Press `Ctrl + C` in the terminal where Vite is running
+
+2. **Stop the containers**
+    ```sh
+    docker compose down
+    ```
+
+## Quick Commands Reference
+
+-   Start containers: `docker compose up -d`
+-   Stop containers: `docker compose down`
+-   View logs: `docker compose logs`
+-   Access container shell: `docker compose exec app bash`
+-   Run Laravel commands: `docker compose exec app php artisan <command>`
+-   Run npm commands: `docker compose exec app npm <command>`
+
+## Development
+
+-   **Start Vite development server** (for frontend development)
+
+    ```sh
+    docker compose exec app npm run dev
+    ```
+
+-   **Stop the containers**
+    ```sh
+    docker compose down
+    ```
+
+## Environment Variables
+
+Create a `.env` file in the root directory with the following variables:
+
+```env
+DB_CONNECTION=mysql
+DB_HOST=db
+DB_PORT=3306
+DB_DATABASE=portfolio_blog_db
+DB_USERNAME=admin
+DB_PASSWORD=userpassword
+```
+
+## Project Structure
+
+-   `app/` - Laravel application code
+-   `docker/` - Docker configuration files
+-   `public/` - Publicly accessible files
+-   `resources/` - Frontend assets (CSS, JS, views)
+-   `database/` - Database migrations and seeders
+
+## Common Issues
+
+1. **Database Connection Issues**
+
+    - Make sure the database credentials in `.env` match those in `docker-compose.yml`
+    - Try `docker compose down -v` to reset the database
+
+2. **Vite Manifest Not Found**
+
+    - Run `docker compose exec app npm run build`
+
+3. **Container Restarting**
+    - Check logs with `docker compose logs db`
